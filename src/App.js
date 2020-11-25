@@ -1,80 +1,42 @@
 import React, { Component } from 'react';
 import './App.css';
-import Person from './Person/Person';
+import Validation from './Validation/Validation'
+import Char from './Char/Char'
 
 class App extends Component {
+
   state = {
-    persons: [
-      { name: 'Max', age: 28 },
-      { name: 'Manu', age: 29 },
-      { name: 'Stephanie', age: 26 }
-    ],
-    otherState: 'some other value',
-    showPersons: false,
+    userInput: ''
   }
 
-  switchNameHandler = (newName) => {
-    // console.log('Was clicked!');
-    // DON'T DO THIS: this.state.persons[0].name = 'Maximilian';
-    this.setState( {
-      persons: [
-        { name: newName, age: 28 },
-        { name: 'Manu', age: 29 },
-        { name: 'Stephanie', age: 27 }
-      ]
-    } )
+  inputChangedHandler = (event) => {
+    this.setState({
+      userInput: event.target.value
+    })
   }
 
-  nameChangedHandler = (event) => {
-    this.setState( {
-      persons: [
-        { name: 'Max', age: 28 },
-        { name: event.target.value, age: 29 },
-        { name: 'Stephanie', age: 26 }
-      ]
-    } )
+  deleteCharHandler = ( index ) => {
+    const text = this.state.userInput.split('')
+    text.splice(index, 1)
+    const updatedText = text.join('')
+    this.setState({userInput: updatedText})
   }
 
-  togglePersonsHandler = () => {
-    const doesShow = this.state.showPersons
-    this.setState({ showPersons: !doesShow})
-  }
-
-  render () {
-    const style = {
-      backgroundColor: 'white',
-      font: 'inherit',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer'
-    };
+  render() {
+    const charList = this.state.userInput.split('').map((char, index) => {
+      return <Char character={char} key={index} clicked={() => this.deleteCharHandler(index)}/>
+    })
 
     return (
       <div className="App">
-        <h1>Hi, I'm a React App</h1>
-        <p>This is really working!</p>
-        <button 
-          style={style}
-          onClick={this.togglePersonsHandler}>Switch Name</button>
-        { this.state.showPersons ?
-          <div>
-            <Person 
-              name={this.state.persons[0].name} 
-              age={this.state.persons[0].age} />
-            <Person 
-              name={this.state.persons[1].name} 
-              age={this.state.persons[1].age}
-              click={this.switchNameHandler.bind(this, 'Max!')}
-              changed={this.nameChangedHandler} >My Hobbies: Racing</Person>
-            <Person 
-              name={this.state.persons[2].name} 
-              age={this.state.persons[2].age} />
-          </div> : null
-        }
-        
+        <h1>Assignment 2</h1>
+        <hr />
+        <input type="text" onChange={this.inputChangedHandler}  value={this.state.userInput}/>
+        <p>{this.state.userInput.length}</p>
+        <Validation inputLength={this.state.userInput.length}/>
+        {charList}
       </div>
     );
-    // return React.createElement('div', {className: 'App'}, React.createElement('h1', null, 'Does this work now?'));
   }
 }
 
